@@ -1,0 +1,34 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: coworking-api
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgres-db}:${DB_PORT:5432}/${DB_NAME:coworking_db}
+    username: ${DB_USER:coworking_user}
+    password: ${DB_PASSWORD:coworking_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    com.coworking.api: INFO
+    org.hibernate.SQL: WARN
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    expiration-ms: 86400000
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+  payment-gateway:
+    url: ${PAYMENT_GATEWAY_URL:https://mock-payment-gateway.free.beeceptor.com/api/v1/charge}

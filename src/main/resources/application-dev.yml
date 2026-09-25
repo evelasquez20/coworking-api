@@ -1,0 +1,26 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/coworking_db
+    username: coworking_user
+    password: coworking_password
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    com.coworking.api: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: DEBUG
