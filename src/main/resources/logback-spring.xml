@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Directorio donde se guardarán los logs -->
+    <property name="LOGS" value="./logs" />
+
+    <!-- Appender para la consola (Desarrollo) -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Appender para el archivo rotativo diario -->
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Archivo activo actual -->
+        <file>${LOGS}/coworking-api.log</file>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <!-- Política de rotación basada en tiempo (diaria) -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Patrón para los archivos históricos (cuando cambia el día) -->
+            <fileNamePattern>${LOGS}/archived/coworking-api-%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!-- Opcional: Mantener el historial de los últimos 30 días -->
+            <maxHistory>30</maxHistory>
+            <!-- Opcional: Límite total de tamaño para todos los logs históricos -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Configuración general para la aplicación -->
+    <root level="INFO">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+    </root>
+
+    <!-- Niveles específicos para tu paquete y seguridad -->
+    <logger name="com.coworking.api" level="DEBUG" additivity="false">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+    </logger>
+
+    <logger name="org.springframework.security" level="DEBUG" additivity="false">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+    </logger>
+
+</configuration>
