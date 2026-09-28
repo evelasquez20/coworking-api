@@ -28,7 +28,7 @@ public class SpaceServiceImpl implements SpaceService {
 
         if (spaceRepository.existsByName(request.name())) {
             log.warn("Error al crear espacio: ya existe un espacio con el nombre '{}'", request.name());
-            throw new BusinessException(ErrorCode.SPACE_ALREADY_EXISTS);
+            throw new BusinessException(ErrorCode.SPACE_NAME_DUPLICATED);
         }
 
         Space space = Space.builder()

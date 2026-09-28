@@ -1,5 +1,8 @@
 package com.coworking.api.service.impl;
 
+import com.coworking.api.client.PaymentGatewayClient;
+import com.coworking.api.domain.dto.PaymentRequest;
+import com.coworking.api.domain.dto.PaymentResponse;
 import com.coworking.api.domain.dto.ReservationRequest;
 import com.coworking.api.domain.dto.ReservationResponse;
 import com.coworking.api.domain.entity.Reservation;
@@ -30,6 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final SpaceRepository spaceRepository;
     private final UserRepository userRepository;
+    private final PaymentGatewayClient paymentGatewayClient;
 
     @Override
     @Transactional
@@ -152,6 +156,41 @@ public class ReservationServiceImpl implements ReservationService {
                 updatedReservation.getId(), updatedReservation.getStatus());
 
         return mapToResponse(updatedReservation);
+    }
+
+    @Override
+    @Transactional
+    public ReservationResponse processPayment(Long reservationId, PaymentRequest request, String userEmail) {
+        log.info("Iniciando proceso de pago para la reserva ID: {} solicitado por el usuario: '{}'", reservationId, userEmail);
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> {
+                    log.warn("Proceso de pago fallido: No se encontró la reserva con ID: {}", reservationId);
+                    return new BusinessException(ErrorCode.RESERVATION_NOT_FOUND);
+                });
+
+        if (!reservation.getUser().getEmail().equals(userEmail)) {
+            log.warn("Acceso denegado: El usuario '{}' no es propietario de la reserva ID: {}", userEmail, reservationId);
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_RESERVATION_ACCESS);
+        }
+
+        PaymentResponse paymentResult = paymentGatewayClient.processPayment(
+                reservation.getId(),
+                reservation.getTotalCost(),
+                request.paymentMethodId()
+        );
+
+        if (paymentResult.successful()) {
+            reservation.confirm();
+            log.info("Estado de la reserva ID: {} actualizado a CONFIRMED", reservation.getId());
+        } else {
+            log.warn("El pago no fue completado para la reserva ID: {}. Razón: {}", reservation.getId(), paymentResult.message());
+        }
+
+        Reservation savedReservation = reservationRepository.save(reservation);
+
+        log.info("Proceso de pago finalizado con éxito para la reserva ID: {}", savedReservation.getId());
+        return mapToResponse(savedReservation);
     }
 
     private ReservationResponse mapToResponse(Reservation reservation) {

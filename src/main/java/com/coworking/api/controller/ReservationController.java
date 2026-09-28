@@ -1,5 +1,6 @@
 package com.coworking.api.controller;
 
+import com.coworking.api.domain.dto.PaymentRequest;
 import com.coworking.api.domain.dto.ReservationRequest;
 import com.coworking.api.domain.dto.ReservationResponse;
 import com.coworking.api.service.ReservationService;
@@ -50,6 +51,15 @@ public class ReservationController {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         return ResponseEntity.ok(reservationService.cancelReservation(id, authentication.getName(), isAdmin));
+    }
+
+    @PostMapping("/{id}/pay")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<ReservationResponse> processPayment(
+            @PathVariable Long id,
+            @Valid @RequestBody PaymentRequest request,
+            Authentication authentication) {
+        return ResponseEntity.ok(reservationService.processPayment(id, request, authentication.getName()));
     }
 
 }
