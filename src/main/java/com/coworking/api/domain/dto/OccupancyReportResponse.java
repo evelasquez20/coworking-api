@@ -1,12 +1,13 @@
 package com.coworking.api.domain.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public record OccupancyReportResponse(
 
-        Long spaceId,
-        String spaceName,
-        Long totalReservedHours,
-        BigDecimal occupancyPercentage
-
+        LocalDate startDate,
+        LocalDate endDate,
+        Long totalReservations,
+        BigDecimal occupancyPercentage,
+        Long totalReservedHours
 ) {}

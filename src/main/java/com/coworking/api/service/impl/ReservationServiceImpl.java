@@ -10,6 +10,7 @@ import com.coworking.api.domain.entity.Space;
 import com.coworking.api.domain.entity.User;
 import com.coworking.api.domain.enums.ReservationStatusEnum;
 import com.coworking.api.domain.state.ReservationState;
+import com.coworking.api.event.ReservationConfirmedEvent;
 import com.coworking.api.exception.BusinessException;
 import com.coworking.api.exception.ErrorCode;
 import com.coworking.api.repository.ReservationRepository;
@@ -18,6 +19,7 @@ import com.coworking.api.repository.UserRepository;
 import com.coworking.api.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final SpaceRepository spaceRepository;
     private final UserRepository userRepository;
     private final PaymentGatewayClient paymentGatewayClient;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -183,6 +186,17 @@ public class ReservationServiceImpl implements ReservationService {
         if (paymentResult.successful()) {
             reservation.confirm();
             log.info("Estado de la reserva ID: {} actualizado a CONFIRMED", reservation.getId());
+
+            // Publicación del evento asíncrono de confirmación
+            eventPublisher.publishEvent(new ReservationConfirmedEvent(
+                    reservation.getId(),
+                    reservation.getUser().getEmail(),
+                    reservation.getSpace().getName(),
+                    reservation.getTotalCost(),
+                    reservation.getStartTime(),
+                    reservation.getEndTime()
+            ));
+            log.info("[EVENT-PUBLISHED] Evento ReservationConfirmedEvent emitido para la reserva ID: {}", reservation.getId());
         } else {
             log.warn("El pago no fue completado para la reserva ID: {}. Razón: {}", reservation.getId(), paymentResult.message());
         }
