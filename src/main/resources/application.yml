@@ -31,4 +31,54 @@ app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
   payment-gateway:
-    url: ${PAYMENT_GATEWAY_URL:https://mock-payment-gateway.free.beeceptor.com/api/v1/charge}
+    url: ${PAYMENT_GATEWAY_URL:https://api.pasareladepagos.com/v1/validate}
+
+# Configuración de Actuator para exponer métricas y estado del Circuit Breaker
+management:
+  endpoints:
+    web:
+      exposure:
+        # Expone los endpoints de Actuator necesarios para monitorear salud y estado de resiliencia.
+        include: health, info, metrics, circuitbreakers
+  endpoint:
+    health:
+      # Muestra el detalle técnico de cada componente monitoreado.
+      show-details: always
+  health:
+    circuitbreakers:
+      # Integra el estado actual de los circuitos (CLOSED, OPEN, HALF_OPEN) dentro de /actuator/health.
+      enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      paymentService:
+        # COUNT_BASED evalúa las peticiones por número de llamadas (no por ventana de tiempo).
+        slidingWindowType: COUNT_BASED
+
+        # Muestra de las últimas 50 peticiones analizadas para calcular la tasa de fallos.
+        slidingWindowSize: 50
+
+        # Número mínimo de llamadas necesarias antes de que el circuito pueda decidir abrirse.
+        # Evita falsos positivos al arrancar el servicio.
+        minimumNumberOfCalls: 20
+
+        # Porcentaje de error (50%). Si 10 de 20 peticiones fallan, el circuito pasa a estado ABIERTO (OPEN).
+        failureRateThreshold: 50
+
+        # Porcentaje de llamadas lentas permitidas antes de considerar el servicio degradado.
+        slowCallRateThreshold: 100
+
+        # Toda llamada que supere los 3000 ms (3 segundos) se contamina como "llamada lenta".
+        slowCallDurationThreshold: 3000ms
+
+        # Tiempo (30 segundos) que el circuito permanece ABIERTO rechazando llamadas inmediatamente
+        # y derivando al método fallback antes de intentar reconectarse.
+        waitDurationInOpenState: 30000ms
+
+        # Cantidad de peticiones de prueba permitidas cuando el circuito pasa a HALF_OPEN.
+        # Si estas 5 peticiones tienen éxito, el circuito se CIERRA (CLOSED); si fallan, vuelve a abrirse (OPEN).
+        permittedNumberOfCallsInHalfOpenState: 5
+
+        # Transición automática de estado OPEN a HALF_OPEN una vez vencido el 'waitDurationInOpenState'.
+        automaticTransitionFromOpenToHalfOpenEnabled: true

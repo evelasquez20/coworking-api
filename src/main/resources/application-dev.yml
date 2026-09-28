@@ -18,3 +18,45 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+app:
+  payment-gateway:
+    # Redirige a un servidor Mock/WireMock local durante el desarrollo.
+    url: "http://localhost:8089/api/v1/payments/validate"
+
+# Configuración de Actuator para exponer métricas y estado del Circuit Breaker
+management:
+  endpoints:
+    web:
+      exposure:
+        # Expone los endpoints de Actuator necesarios para monitorear salud y estado de resiliencia.
+        include: health, info, metrics, circuitbreakers, circuitbreakerevents
+  endpoint:
+    health:
+      # Muestra el detalle técnico de cada componente monitoreado.
+      show-details: always
+  health:
+    circuitbreakers:
+      # Integra el estado actual de los circuitos (CLOSED, OPEN, HALF_OPEN) dentro de /actuator/health.
+      enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      paymentService:
+        # Obligatorio para registrar la salud en /actuator/health
+        registerHealthIndicator: true
+
+        # Umbral de fallos (%) para abrir el circuito
+        failureRateThreshold: 50
+
+        # Muestra reducida para pruebas locales rápidas
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 3
+
+        # Tiempo en estado ABIERTO antes de pasar a HALF_OPEN
+        waitDurationInOpenState: 10000ms
+
+        # Evaluaciones en HALF_OPEN para confirmar recuperación
+        permittedNumberOfCallsInHalfOpenState: 2
