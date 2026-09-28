@@ -1,0 +1,293 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-09-28T16:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_coworking_api",
+      "parentId": null,
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "name": "Coworking Space API",
+      "description": "Colección completa para la prueba técnica de Coworking",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_coworking_base",
+      "parentId": "wrk_coworking_api",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8080/api/v1",
+        "token": "pega_tu_token_aqui"
+      },
+      "color": "#00b300",
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_coworking_api",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "name": "1. Auth Controller",
+      "description": "",
+      "environment": {},
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_auth_register",
+      "parentId": "fld_auth",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/auth/register",
+      "name": "1.1 Register",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"firstName\": \"Juan\",\n\t\"lastName\": \"Perez\",\n\t\"email\": \"admin@coworking.sv\",\n\t\"password\": \"Password123!\",\n\t\"role\": \"ADMIN\"\n}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "req_auth_login",
+      "parentId": "fld_auth",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/auth/login",
+      "name": "1.2 Login",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"email\": \"admin@coworking.sv\",\n\t\"password\": \"Password123!\"\n}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": {},
+      "_type": "request"
+    },
+    {
+      "_id": "fld_spaces",
+      "parentId": "wrk_coworking_api",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "name": "2. Space Controller",
+      "description": "",
+      "environment": {},
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_spaces_get_all",
+      "parentId": "fld_spaces",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/spaces",
+      "name": "2.1 Get All Spaces",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "req_spaces_get_id",
+      "parentId": "fld_spaces",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/spaces/1",
+      "name": "2.2 Get Space By Id",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "req_spaces_post",
+      "parentId": "fld_spaces",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/spaces",
+      "name": "2.3 Create Space (Admin)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"Oficina Privada 101\",\n\t\"type\": \"PRIVATE_OFFICE\",\n\t\"capacity\": 4,\n\t\"location\": \"Piso 1, Ala Sur\",\n\t\"hourlyRate\": 15.50\n}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "req_spaces_put",
+      "parentId": "fld_spaces",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/spaces/1",
+      "name": "2.4 Update Space (Admin)",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"Oficina Privada 101 (Actualizada)\",\n\t\"type\": \"PRIVATE_OFFICE\",\n\t\"capacity\": 6,\n\t\"location\": \"Piso 1, Ala Sur\",\n\t\"hourlyRate\": 18.00\n}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "req_spaces_delete",
+      "parentId": "fld_spaces",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/spaces/1",
+      "name": "2.5 Delete Space (Admin)",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "fld_reservations",
+      "parentId": "wrk_coworking_api",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "name": "3. Reservation Controller",
+      "description": "",
+      "environment": {},
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_res_create",
+      "parentId": "fld_reservations",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/reservations",
+      "name": "3.1 Create Reservation",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"spaceId\": 1,\n\t\"startTime\": \"2026-10-15T09:00:00\",\n\t\"endTime\": \"2026-10-15T12:00:00\"\n}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "req_res_my",
+      "parentId": "fld_reservations",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/reservations/my-reservations",
+      "name": "3.2 Get My Reservations",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "req_res_all",
+      "parentId": "fld_reservations",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/reservations",
+      "name": "3.3 Get All Reservations (Admin)",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "req_res_pay",
+      "parentId": "fld_reservations",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/reservations/1/pay",
+      "name": "3.4 Pay Reservation",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"paymentMethodId\": \"CARD_98765\"\n}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "req_res_cancel",
+      "parentId": "fld_reservations",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/reservations/1/cancel",
+      "name": "3.5 Cancel Reservation",
+      "description": "",
+      "method": "PATCH",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    },
+    {
+      "_id": "fld_reports",
+      "parentId": "wrk_coworking_api",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "name": "4. Report Controller",
+      "description": "",
+      "environment": {},
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_rep_occupancy",
+      "parentId": "fld_reports",
+      "modified": 1695900000000,
+      "created": 1695900000000,
+      "url": "{{ _.base_url }}/reports/occupancy",
+      "name": "4.1 Get Occupancy Report (Admin)",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "startDate",
+          "value": "2026-10-01"
+        },
+        {
+          "name": "endDate",
+          "value": "2026-10-31"
+        }
+      ],
+      "headers": [],
+      "authentication": { "type": "bearer", "token": "{{ _.token }}" },
+      "_type": "request"
+    }
+  ]
+}
