@@ -2,8 +2,10 @@ package com.coworking.api.config.security;
 
 import com.coworking.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@EnableAsync      // Habilita el soporte para procesamiento asíncrono (@Async)
+@EnableCaching    // Habilita la abstracción de caché (@Cacheable)
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
