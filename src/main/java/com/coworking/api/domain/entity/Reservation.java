@@ -37,8 +37,8 @@ public class Reservation {
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
-    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    @Column(name = "total_cost", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalCost;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)

@@ -19,20 +19,20 @@ public class Space {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false)
     private SpaceType type;
 
     @Column(nullable = false)
     private Integer capacity;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false)
     private String location;
 
-    @Column(name = "price_per_hour", nullable = false, precision = 10, scale = 2)
-    private BigDecimal pricePerHour;
-
+    @Column(name = "hourly_rate", nullable = false)
+    private BigDecimal hourlyRate;
+    
 }
