@@ -10,6 +10,7 @@ public record ReservationResponse(
         Long id,
         Long userId,
         String userName,
+        String userEmail,
         Long spaceId,
         String spaceName,
         LocalDateTime startTime,

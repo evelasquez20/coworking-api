@@ -26,6 +26,9 @@ public enum ErrorCode {
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RES_001", "La reserva solicitada no existe"),
     RESERVATION_OVERLAP(HttpStatus.CONFLICT, "RES_002", "El espacio ya cuenta con una reserva confirmada en el horario seleccionado"),
     INVALID_RESERVATION_STATE(HttpStatus.BAD_REQUEST, "RES_003", "Transición de estado no permitida para la reserva"),
+    INVALID_RESERVATION_STATE_TRANSITION(HttpStatus.UNPROCESSABLE_ENTITY, "RES_003", "Transición de estado no permitida para la reserva"),
+    INVALID_RESERVATION_TIME(HttpStatus.BAD_REQUEST, "RES_004", "La hora de fin debe ser posterior a la hora de inicio"),
+    UNAUTHORIZED_RESERVATION_ACCESS(HttpStatus.FORBIDDEN, "RES_005", "No tienes permisos para acceder o modificar esta reserva"),
 
     // Integraciones Externas / Pagos
     PAYMENT_SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "EXT_001", "El servicio de pagos no está disponible temporalmente");
@@ -33,4 +36,9 @@ public enum ErrorCode {
     private final HttpStatus httpStatus;
     private final String code;
     private final String defaultMessage;
+
+    public String getMessage() {
+        return defaultMessage;
+    }
+
 }
