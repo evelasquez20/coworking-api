@@ -1,0 +1,31 @@
+server:
+  port: 0 # Puerto aleatorio para evitar conflictos en pruebas concurrentes
+  servlet:
+    context-path: /api/v1
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/coworking_test_db
+    username: coworking_user
+    password: coworking_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # Limpia y recrea el esquema limpio en cada prueba
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-ms: 86400000
+  payment-gateway:
+    url: http://localhost:8089/api/v1/payments/validate
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
